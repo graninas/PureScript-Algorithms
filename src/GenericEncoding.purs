@@ -1,4 +1,4 @@
-module Types.Generic where
+module GenericEncoding where
 
 import Data.Foreign (F, Foreign)
 import Data.Foreign.Generic (defaultOptions, genericDecode, genericEncode)

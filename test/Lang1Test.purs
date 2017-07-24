@@ -10,15 +10,17 @@ import Test.Spec.Assertions (shouldEqual)
 import Test.Common
 
 import Types.XUnit
+import Types.Serialize
 import Lang1
 
 
 lang1Test = do
-  let x = LangA1 IntF 10 xunit
-  liftEff $ log $ encodeJSON x
+  let x = LangA1 (defaultSerialize IntF) (defaultSerialize 10) xunit
+  let y = langA1Int 10
+  liftEff $ log $ encodeLang y
   pure unit
 
 runTests = do
-  describe "Flow tests " do
+  describe "Tests " do
     it "Lang1 test" lang1Test
     pending "other tests..."

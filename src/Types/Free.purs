@@ -2,6 +2,7 @@ module Types.Free where
 
 import Prelude
 
+import Control.Monad.State as S
 import Control.Monad.Free as F
 import Control.Monad.Rec.Class (class MonadRec)
 import Control.Monad.Rec.Class (class MonadRec, Step(..), tailRecM)
@@ -17,6 +18,10 @@ import Data.Traversable (class Traversable, traverse)
 import Data.Tuple (Tuple(..))
 import Data.Generic.Rep as G
 import Data.Generic.Rep.Show as GShow
+import Data.Foreign.Class (class Decode, class Encode)
+import Data.Foreign.Generic (defaultOptions, genericDecode, genericEncode)
+import Data.Foreign.Generic (decodeJSON, encodeJSON)
+import Data.Function.Uncurried (Fn2, runFn2)
 import Unsafe.Coerce (unsafeCoerce)
 
 import Types.XUnit
@@ -29,11 +34,11 @@ foldFree f (Free v) = F.foldFree f v
 liftF :: forall f. NaturalTransformation f (Free f)
 liftF f = Free (F.liftF f)
 
+--------------------------------------------------------------------------------
 
 derive instance genericFree :: G.Generic (Free f a) _
 derive instance genericFreeU :: G.Generic (Free f Unit) _
 derive instance genericFreeXU :: G.Generic (Free f XUnit) _
-
 
 derive newtype instance eqFree' :: (Functor f, Eq1 f, Eq a) => Eq (Free f a)
 derive newtype instance eq1Free' :: (Functor f, Eq1 f) => Eq1 (Free f)
@@ -50,20 +55,3 @@ derive newtype instance freeMonadTrans' :: MonadTrans Free
 derive newtype instance freeMonadRec' :: MonadRec (Free f)
 derive newtype instance foldableFree' :: (Functor f, Foldable f) => Foldable (Free f)
 derive newtype instance traversableFree' :: Traversable f => Traversable (Free f)
-
-
-{-
-instance eqFree :: (Functor f, Eq1 f, Eq a) => Eq (Free f a)
-instance eq1Free :: (Functor f, Eq1 f) => Eq1 (Free f)
-instance ordFree :: (Functor f, Ord1 f, Ord a) => Ord (Free f a)
-instance ord1Free :: (Functor f, Ord1 f, Ord a) => Ord1 (Free f)
-instance freeFunctor :: Functor (Free f)
-instance freeBind :: Bind (Free f)
-instance freeApplicative :: Applicative (Free f)
-instance freeApply :: Apply (Free f)
-instance freeMonad :: Monad (Free f)
-instance freeMonadTrans :: MonadTrans Free
-instance freeMonadRec :: MonadRec (Free f)
-instance foldableFree :: (Functor f, Foldable f) => Foldable (Free f)
-instance traversableFree :: Traversable f => Traversable (Free f)
--}
