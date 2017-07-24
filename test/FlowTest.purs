@@ -26,5 +26,5 @@ flowTest = do
 
 runTests = do
   describe "Flow tests " do
-    it "Flow test" flowTest
+  --  it "Flow test" flowTest
     pending "other tests..."
